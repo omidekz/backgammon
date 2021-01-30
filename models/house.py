@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Sequence, Optional, Dict, Tuple
 
 from . import Marble
@@ -7,7 +8,7 @@ class House:
          1,  6,  8, 12,
         24, 19, 17, 13
     )
-    MARBLES_HOUSE_TYPE = dict(zip(House.MARBLES_HOUSE_NUMBERS, [
+    MARBLES_HOUSE_TYPE = dict(zip(MARBLES_HOUSE_NUMBERS, [
         Marble.WHITE, Marble.BLACK, Marble.BLACK, Marble.WHITE,
         Marble.BLACK, Marble.WHITE, Marble.WHITE, Marble.BLACK
     ]))
@@ -23,12 +24,12 @@ class House:
             return (House.MARBLES_HOUSE_TYPE[house_number], 5)
         elif 8 <= house_number <= 17:
             return (House.MARBLES_HOUSE_TYPE[house_number], 3)
-        return (House.MARBLES_HOUSE_NUMBERS[house_number], 2)
+        return (House.MARBLES_HOUSE_TYPE[house_number], 2)
  
-    @classmethod
-    def build(cls, starter, house_number: int) -> House:
-        host, number = cls.create_house_detail(house_number)
-        return cls([host] * number)
+    @staticmethod
+    def build(house_number: int) -> House:
+        host, number = House.create_house_detail(house_number)
+        return House([host] * number)
 
     def marble_counter(self, marble: Marble) -> int:
         return self.marbles.count(marble)
