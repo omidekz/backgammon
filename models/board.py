@@ -32,7 +32,11 @@ class Board:
     def board_items(self) -> Sequence[int, House]:
         return self.board.items()
 
-    def marble_houses(self, marble: Marble, indexs_seq: bool = False) -> Sequence[Union[int, House]]:
+    def marble_houses(
+        self,
+        marble: Marble,
+        indexs_seq: bool = False
+    ) -> Sequence[Union[int, House]]:
         result_sequence = []
         for house_number, house in self.board_items():
             if house.is_host(marble):
@@ -42,17 +46,39 @@ class Board:
     def get_house(self, house: Union[House, int]) -> House:
         return self[house]
 
-    def can_move(self, src: Union[House, int], dst: Union[House, int], marble: Marble):
+    def can_move(
+        self,
+        src: Union[House, int],
+        dst: Union[House, int],
+        marble: Marble,
+        number: int = 1
+    ):
         src, dst = self.get_house(src), self.get_house(dst)
         return src.is_host(marble) \
+                and src.marble_counter(marble) >= number \
                 and dst.house_number > src.house_number \
                 and dst.can_add(marble)
 
-    def move_marble(self, src: Union[House, int], dst: Union[House, int], marble: Marble, number: int = 1) -> bool:
-        if self.can_move(src):
+    def move_marble(
+        self,
+        src: Union[House, int],
+        dst: Union[House, int],
+        marble: Marble,
+        number: int = 1
+    ) -> bool:
+        if not self.can_move(src, dst, marble, number):
             return False
-        src.pop(marble, number)
-        dst.add(marble, number)
+        self.get_house(src).pop(marble, number)
+        self.get_house(dst).add(marble, number)
+
+    def move_by(
+        self,
+        src: Union[House, int],
+        marble: Marble,
+        movements: int,
+        number: int = 1
+    ) -> bool:
+        return self.move_marble(src, src + movements, marble, number)
 
     def __getitem__(self, house: Union[int, House]) -> House:
         if isinstance(house, House):
