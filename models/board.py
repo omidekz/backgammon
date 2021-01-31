@@ -25,7 +25,7 @@ class Board:
     def board_items(self) -> Sequence[int, House]:
         return self.board.items()
 
-    def marble_house(self, marble: Marble, indexs_seq=False) -> Sequence[Union[int, House]]:
+    def marble_houses(self, marble: Marble, indexs_seq=False) -> Sequence[Union[int, House]]:
         result_sequence = []
         for house_number, house in self.board_items():
             if house.is_host(marble):
