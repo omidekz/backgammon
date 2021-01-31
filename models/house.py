@@ -48,7 +48,7 @@ class House:
     def marble_counter(self, marble: Marble) -> int:
         return self.marbles.count(marble)
 
-    def marbles_counter(self, marbles: Sequence[Marble] = [Marble.BLACK, Marble.WHITE]) -> Sequence[Marble, int]:
+    def marbles_counter(self, marbles: Sequence[Marble] = [Marble.BLACK, Marble.WHITE]) -> Sequence[int]:
         return list(map(self.marble_counter, marbles))
 
     def premitive_conditions(self, blacks: int = 0, whites: int = 0) -> Optional[Marble]:
