@@ -54,10 +54,13 @@ class Board:
         number: int = 1
     ):
         src, dst = self.get_house(src), self.get_house(dst)
-        return src.is_host(marble) \
-                and src.marble_counter(marble) >= number \
-                and dst.house_number > src.house_number \
-                and dst.can_add(marble)
+        src_house_number, dst_house_number = src.house_number, dst.house_number
+        return bool(
+            src.is_host(marble) \
+            and src.marble_counter(marble) >= number \
+            and marble.has_progressive_movements(src_house_number, dst_house_number) \
+            and dst.can_add(marble)
+        )
 
     def move_marble(
         self,
@@ -96,7 +99,7 @@ if __name__ == '__main__':
     assert black_houses == [6, 8, 13, 24]
     assert white_houses == [1, 12, 17, 19]
 
-    assert board.can_move(1, 2, Marble.WHITE) == True
+    assert board.can_move(1, 2, Marble.WHITE) == False
     assert board.can_move(6, 7, Marble.BLACK) == True
 
     assert board.can_move(1, 2, Marble.BLACK) == False # house 1's host is not BLACK
