@@ -6,7 +6,7 @@ class Dice:
     MAX_NUMBER = 6
 
     @staticmethod
-    def toss(number: int = 1) -> Sequence[int]:
+    def toss(number: int = 2) -> Sequence[int]:
         tosses = []
         for _ in range(number):
             random_number = Dice.random_number()
