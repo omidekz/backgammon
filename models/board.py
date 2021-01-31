@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Union
 
-from . import House
+from . import House, Dice
 
 class Board:
 
@@ -13,8 +13,12 @@ class Board:
                 [House.build(house_number=i) for i in range(1, 25)]
             )
         )
+        self.current_turn_toss = Dice.toss(2)
 
-    def __getitem__(self, house_number):
+    def next(self) -> None:
+        self.current_turn_toss = Dice.toss()
+
+    def __getitem__(self, house_number: int) -> House:
         if not 1 <= house_number <= 24:
             raise ValueError("{} is not valid house number".format(house_number))
         return self.board[house_number]
