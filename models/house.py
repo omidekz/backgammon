@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Sequence, Optional, Dict, Tuple
+from typing import Sequence, Optional, Dict, Tuple, Union
 
 try:
     from . import Marble
@@ -81,7 +81,7 @@ class House:
         return marble == self.host_premitive()
 
     def can_conqure(self, marble: Marble) -> bool:
-        has_continual_host = bool(self.host_continual())
+        has_continual_host = self.host_continual()
         return not has_continual_host or has_continual_host == marble
 
     def can_add(self, marble: Marble) -> bool:
@@ -96,9 +96,13 @@ class House:
         self.marbles.extend([marble] * number)
         return True
 
+    def __add__(self, value: Union[House, int]) -> int:
+        return self.house_number + \
+                value if isinstance(value, int) else value.house_number
+
     def pop(self, marble: Marble, number: int = 1) -> bool:
-        can_pop = self.host() == marble and self.marbles.count(marble) <= number
-        while can_add and number > 0:
+        can_pop = self.host() == marble and self.marble_counter(marble) >= number
+        while can_pop and number > 0:
             number -= 1
             self.marbles.pop(0)
         return can_pop
