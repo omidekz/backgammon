@@ -96,8 +96,7 @@ class House:
         return True
 
     def __add__(self, value: Union[House, int]) -> int:
-        return self.house_number + \
-                value if isinstance(value, int) else value.house_number
+        return int(self) + int(value)
 
     def pop(self, marble: Marble, number: int = 1) -> bool:
         can_pop = self.host() == marble and self.marble_counter(marble) >= number
