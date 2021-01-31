@@ -2,7 +2,12 @@ from __future__ import annotations
 from enum import Enum
 from typing import Union, Sequence
 
-from . import House, Dice, Marble
+try:
+    from . import House, Dice, Marble
+except:
+    from house import House
+    from dice import Dice
+    from marble import Marble
 
 class Board:
 
@@ -21,11 +26,13 @@ class Board:
 
     def next(self, toss: Sequence[int]) -> None:
         self.current_turn_toss = toss or Dice.toss()
+        if self.current_turn_toss[0] == self.current_turn_toss[1]:
+            self.current_turn_toss *= 2
 
     def board_items(self) -> Sequence[int, House]:
         return self.board.items()
 
-    def marble_houses(self, marble: Marble, indexs_seq=False) -> Sequence[Union[int, House]]:
+    def marble_houses(self, marble: Marble, indexs_seq: bool = False) -> Sequence[Union[int, House]]:
         result_sequence = []
         for house_number, house in self.board_items():
             if house.is_host(marble):
@@ -33,16 +40,43 @@ class Board:
         return result_sequence
 
     def get_house(self, house: Union[House, int]) -> House:
-        return house if isinstance(house, House) else self[house]
+        return self[house]
 
-    def can_move_marble_to(self, marble: Marble, house: Union[House, int]) -> bool:
-        house = self.get_house(house)
-        return house.can_add(marble)
+    def can_move(self, src: Union[House, int], dst: Union[House, int], marble: Marble):
+        src, dst = self.get_house(src), self.get_house(dst)
+        return src.is_host(marble) \
+                and dst.house_number > src.house_number \
+                and dst.can_add(marble)
 
-    def move_marble(self, src: Union[House, int], dst: Union[House, int], marble: Marble) -> bool:
-        return src.is_host(marble) and self.can_move_marble_to(marble, dst)
+    def move_marble(self, src: Union[House, int], dst: Union[House, int], marble: Marble, number: int = 1) -> bool:
+        if self.can_move(src):
+            return False
+        src.pop(marble, number)
+        dst.add(marble, number)
 
-    def __getitem__(self, house_number: int) -> House:
-        if not 1 <= house_number <= 24:
-            raise ValueError("{} is not valid house number".format(house_number))
-        return self.board[house_number]
+    def __getitem__(self, house: Union[int, House]) -> House:
+        if isinstance(house, House):
+            return house
+        if not 1 <= house <= 24:
+            raise ValueError("{} is not valid house number".format(house))
+        return self.board[house]
+
+if __name__ == '__main__':
+    board = Board()
+
+    # houses test    
+    black_houses = board.marble_houses(Marble.BLACK, indexs_seq=True)
+    white_houses = board.marble_houses(Marble.WHITE, indexs_seq=True)
+    assert black_houses == [6, 8, 13, 24]
+    assert white_houses == [1, 12, 17, 19]
+
+    assert board.can_move(1, 2, Marble.WHITE) == True
+    assert board.can_move(6, 7, Marble.BLACK) == True
+
+    assert board.can_move(1, 2, Marble.BLACK) == False # house 1's host is not BLACK
+    assert board.can_move(1, 6, Marble.WHITE) == False # house 6's continual host is not WHITE
+    assert board.can_move(1, 6, Marble.BLACK) == False # house 1's host is not BLACK
+
+    # when house's host is None
+    assert board.can_move(2, 3, Marble.BLACK) == False
+    assert board.can_move(2, 3, Marble.BLACK) == False 
