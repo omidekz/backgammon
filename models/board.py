@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Union, Sequence
 
-from . import House, Dice
+from . import House, Dice, Marble
 
 class Board:
 
@@ -17,6 +17,13 @@ class Board:
 
     def next(self, toss: Sequence[int]) -> None:
         self.current_turn_toss = toss or Dice.toss()
+
+    def marble_house(self, marble: Marble, indexs_seq=False) -> Sequence[Union[int, House]]:
+        result_sequence = []
+        for house_number, house in self.board.items():
+            if house.host() == marble:
+                result_sequence.append(house_number if indexs_seq else house)
+        return result_sequence
 
     def __getitem__(self, house_number: int) -> House:
         if not 1 <= house_number <= 24:
