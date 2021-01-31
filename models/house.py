@@ -78,17 +78,27 @@ class House:
 
     def can_conqure(self, marble: Marble) -> bool:
         has_continual_host = bool(self.host_continual())
-        return not has_continual_host or has_continual_host == marble 
+        return not has_continual_host or has_continual_host == marble
 
-    def add(self, marble: Marble) -> bool:
-        if not self.can_conqure(marble):
+    def can_add(self, marble: Marble) -> bool:
+        return self.can_conqure(marble)
+
+    def add(self, marble: Marble, number: int = 1) -> bool:
+        if not self.can_add(marble):
             return False
         host = self.host()
         if host and host != marble:
             self.marbles.remove(host)
-        self.marbles.append(marble)
+        self.marbles.extend([marble] * number)
         return True
-    
+
+    def pop(self, marble: Marble, number: int = 1) -> bool:
+        can_pop = self.host() == marble and self.marbles.count(marble) <= number
+        while can_add and number > 0:
+            number -= 1
+            self.marbles.pop(0)
+        return can_pop
+
     def __str__(self):
         return str(self.marbles)
     
