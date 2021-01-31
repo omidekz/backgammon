@@ -38,7 +38,7 @@ class House:
     def marble_counter(self, marble: Marble) -> int:
         return self.marbles.count(marble)
 
-    def marbles_counter(self, marbles: Sequence[Marble] = [Marble.BLACK, Marble.WHITE]) -> Dict[Marble, int]:
+    def marbles_counter(self, marbles: Sequence[Marble] = [Marble.BLACK, Marble.WHITE]) -> Sequence[Marble, int]:
         return list(map(self.marble_counter, marbles))
 
     def host_premitive(self) -> Optional[Marble]:
