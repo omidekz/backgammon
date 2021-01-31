@@ -106,6 +106,9 @@ class House:
             self.marbles.pop(0)
         return can_pop
 
+    def __int__(self):
+        return self.house_number
+
     def __str__(self):
         return str(self.marbles)
     
