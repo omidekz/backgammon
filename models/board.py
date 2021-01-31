@@ -1,6 +1,6 @@
 from __future__ import annotations
 from enum import Enum
-from typing import Union
+from typing import Union, Sequence
 
 from . import House, Dice
 
@@ -15,8 +15,8 @@ class Board:
         )
         self.current_turn_toss = Dice.toss(2)
 
-    def next(self) -> None:
-        self.current_turn_toss = Dice.toss()
+    def next(self, toss: Sequence[int]) -> None:
+        self.current_turn_toss = toss or Dice.toss()
 
     def __getitem__(self, house_number: int) -> House:
         if not 1 <= house_number <= 24:
