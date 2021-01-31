@@ -1,7 +1,10 @@
 from __future__ import annotations
 from typing import Sequence, Optional, Dict, Tuple
 
-from . import Marble
+try:
+    from . import Marble
+except:
+    from marble import Marble
 
 class House:
     MARBLES_HOUSE_NUMBERS = (
@@ -13,8 +16,9 @@ class House:
         Marble.BLACK, Marble.WHITE, Marble.WHITE, Marble.BLACK
     ]))
 
-    def __init__(self, marbles: Sequence[Marble] = []):
+    def __init__(self, marbles: Sequence[Marble] = [], house_number: int = -1):
         self.marbles = marbles
+        self.house_number = house_number
 
     @staticmethod
     def create_house_detail(house_number: int) -> Tuple[Marble, int]:
@@ -29,7 +33,7 @@ class House:
     @staticmethod
     def build(house_number: int) -> House:
         host, number = House.create_house_detail(house_number)
-        return House([host] * number)
+        return House([host] * number, house_number)
 
     def marble_counter(self, marble: Marble) -> int:
         return self.marbles.count(marble)
@@ -51,7 +55,7 @@ class House:
     def continual_conditions(self, blacks: int = 0, whites: int = 0) -> Optional[Marble]:
         if blacks < 2 and whites < 2:
             return None
-        elif whites == 2:
+        elif whites >= 2:
             return Marble.WHITE
         return Marble.BLACK
 
