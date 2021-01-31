@@ -15,6 +15,10 @@ class Board:
         )
         self.current_turn_toss = Dice.toss(2)
 
+    @property
+    def toss(self):
+        return self.current_turn_toss
+
     def next(self, toss: Sequence[int]) -> None:
         self.current_turn_toss = toss or Dice.toss()
 
