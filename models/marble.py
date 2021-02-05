@@ -1,5 +1,6 @@
 from __future__ import annotations
 from enum import Enum
+from pydantic import BaseModel
 
 class Marble(str, Enum):
     BLACK = 'b'
@@ -15,3 +16,6 @@ class Marble(str, Enum):
 
     def __repr__(self):
         return str(self)
+
+# class Marble(MarbleModel, BaseModel):
+#     pass

@@ -1,9 +1,11 @@
 import random
-from typing import Sequence
+from typing import Sequence, ClassVar
+from pydantic import BaseModel
 
-class Dice:
-    MIN_NUMBER = 1
-    MAX_NUMBER = 6
+
+class Dice(BaseModel):
+    MIN_NUMBER: ClassVar[int] = 1
+    MAX_NUMBER: ClassVar[int] = 6
 
     @staticmethod
     def toss(number: int = 2) -> Sequence[int]:
@@ -16,5 +18,5 @@ class Dice:
     @staticmethod
     def random_number():
         _min = Dice.MIN_NUMBER
-        _max = Dice.MAX_NUMBER + 1
+        _max = Dice.MAX_NUMBER
         return random.randint(_min, _max)

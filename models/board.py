@@ -24,8 +24,8 @@ class Board:
     def toss(self):
         return self.current_turn_toss
 
-    def next(self, toss: Sequence[int]) -> None:
-        self.current_turn_toss = toss or Dice.toss()
+    def next(self, toss: Sequence[int] = [], number: int = 2) -> None:
+        self.current_turn_toss = toss or Dice.toss(number)
         if self.current_turn_toss[0] == self.current_turn_toss[1]:
             self.current_turn_toss *= 2
 
