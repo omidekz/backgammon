@@ -1,29 +1,28 @@
 from __future__ import annotations
-from typing import Sequence, Optional, Dict, Tuple, Union
+from typing import Sequence, Optional, Dict, Tuple, Union, ClassVar
+from pydantic import BaseModel
 
 try:
     from . import Marble
 except:
     from marble import Marble
 
-class House:
-    MARBLES_HOUSE_NUMBERS = (
+class House(BaseModel):
+    MARBLES_HOUSE_NUMBERS: ClassVar[Sequence[int]] = (
          1,  6,  8, 12,
         24, 19, 17, 13
     )
-    MARBLES_HOUSE_TYPE = dict(zip(MARBLES_HOUSE_NUMBERS, [
+    MARBLES_HOUSE_TYPE: ClassVar[Dict[int, Marble]] = dict(zip(MARBLES_HOUSE_NUMBERS, [
         Marble.WHITE, Marble.BLACK, Marble.BLACK, Marble.WHITE,
         Marble.BLACK, Marble.WHITE, Marble.WHITE, Marble.BLACK
     ]))
-
-    def __init__(self, marbles: Sequence[Marble] = [], house_number: int = -1):
-        self.marbles = marbles
-        self.house_number = house_number
+    marbles: Sequence[Marble]
+    house_number: int = -1
 
     @staticmethod
     def build(house_number: int) -> House:
         host, number = House.create_house_detail(house_number)
-        return House([host] * number, house_number)
+        return House(marbles=[host] * number, house_number=house_number)
 
     @staticmethod
     def create_house_detail(house_number: int) -> Tuple[Marble, int]:
