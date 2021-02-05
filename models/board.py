@@ -1,6 +1,7 @@
 from __future__ import annotations
 from enum import Enum
-from typing import Union, Sequence
+from typing import Union, Sequence, Dict
+from pydantic import BaseModel
 
 try:
     from . import House, Dice, Marble
@@ -9,16 +10,14 @@ except:
     from dice import Dice
     from marble import Marble
 
-class Board:
-
-    def __init__(self):
-        self.board = dict(
-            zip(
-                list(range(1, 25)),
-                [House.build(house_number=i) for i in range(1, 25)]
-            )
+class Board(BaseModel):
+    board: Dict[int, House] = dict(
+        zip(
+            list(range(1, 25)),
+            [House.build(house_number=i) for i in range(1, 25)]
         )
-        self.current_turn_toss = Dice.toss(2)
+    )
+    current_turn_toss: Sequence[int] = Dice.toss()
 
     @property
     def toss(self):
