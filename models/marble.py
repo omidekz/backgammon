@@ -16,6 +16,3 @@ class Marble(str, Enum):
 
     def __repr__(self):
         return str(self)
-
-# class Marble(MarbleModel, BaseModel):
-#     pass
