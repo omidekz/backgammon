@@ -8,8 +8,7 @@ class Marble(str, Enum):
 
     def has_progressive_movements(self, src, dst) -> bool:
         distance = dst - src
-        return self == Marble.BLACK and distance > 0 \
-                or self == Marble.WHITE and distance < 0
+        return self.get_destination(src, abs(src - dst)) == dst
 
     def __bool__(self):
         return True
