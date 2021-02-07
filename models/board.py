@@ -80,7 +80,7 @@ class Board(BaseModel):
         movements: int,
         number: int = 1
     ) -> bool:
-        return self.move_marble(src, src + movements, marble, number)
+        return self.move_marble(src, marble.get_destination(src, movements), marble, number)
 
     def __getitem__(self, house: Union[int, House]) -> House:
         if isinstance(house, House):
