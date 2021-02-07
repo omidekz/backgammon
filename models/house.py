@@ -97,12 +97,13 @@ class House(BaseModel):
     def __add__(self, value: Union[House, int]) -> int:
         return int(self) + int(value)
 
-    def pop(self, marble: Marble, number: int = 1) -> bool:
+    def pop(self, marble: Marble, number: int = 1) -> Marble:
         can_pop = self.host() == marble and self.marble_counter(marble) >= number
+        marble = None
         while can_pop and number > 0:
             number -= 1
-            self.marbles.pop(0)
-        return can_pop
+            marble = self.marbles.pop(0)
+        return marble
 
     def __int__(self):
         return self.house_number
