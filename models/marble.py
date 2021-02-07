@@ -11,6 +11,11 @@ class Marble(str, Enum):
         return self == Marble.BLACK and distance > 0 \
                 or self == Marble.WHITE and distance < 0
 
+    def get_destination(self, src: int, moves: int) -> int:
+        if self == Marble.BLACK:
+            src + moves
+        return abs(src - moves) + 1
+
     def __str__(self):
         return self.value
 
