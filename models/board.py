@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Union, Sequence, Dict, ItemsView
 from pydantic import BaseModel
+import copy
 
 try:
     from . import House, Dice, Marble
@@ -90,6 +91,9 @@ class Board(BaseModel):
 
     def __eq__(self, other: Board):
         return self.board == other.board
+
+    def copy(self) -> Board:
+        return Board(**self.dict())
 
 
 if __name__ == '__main__':
