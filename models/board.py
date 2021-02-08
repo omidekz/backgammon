@@ -2,8 +2,6 @@ from __future__ import annotations
 from typing import Union, Sequence, Dict, ItemsView, Optional
 from pydantic import BaseModel
 import copy
-import algorithms
-
 
 try:
     from . import House, Dice, Marble
@@ -94,7 +92,7 @@ class Board(BaseModel):
 
     def __getitem__(self, slice: Union[slice, int]) -> House:
         start, end, step = Board.__extract_slice(slice)
-        if abs(start - end) == 1:
+        if end is None or abs(start - end) == 1:
             return self.board[start]
         return [self.board[i] for i in range(start, end, step)]
 
@@ -102,12 +100,13 @@ class Board(BaseModel):
         return self.board == other.board
 
     def __str__(self):
+        from algorithms.house import house_collection_to_string
         board = self.copy()
         above_houses = self[13:25]
         down_houses =  self[12:0:-1]
-        stream = algorithms.house_collection_to_string(above_houses) \
+        stream = house_collection_to_string(above_houses) \
                     + '\n' \
-                    + algorithms.house_collection_to_string(down_houses, reverse=True)
+                    + house_collection_to_string(down_houses, reverse=True)
         return stream
 
     def __repr__(self):
