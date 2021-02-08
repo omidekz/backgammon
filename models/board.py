@@ -1,7 +1,9 @@
 from __future__ import annotations
-from typing import Union, Sequence, Dict, ItemsView
+from typing import Union, Sequence, Dict, ItemsView, Optional
 from pydantic import BaseModel
 import copy
+import algorithms
+
 
 try:
     from . import House, Dice, Marble
@@ -82,19 +84,37 @@ class Board(BaseModel):
     ) -> bool:
         return self.move_marble(src, marble.get_destination(src, movements), marble, number)
 
-    def __getitem__(self, house: Union[int, House]) -> House:
-        if isinstance(house, House):
-            return house
-        if not 1 <= house <= 24:
-            raise ValueError("{} is not valid house number".format(house))
-        return self.board[house]
+    @staticmethod
+    def __extract_slice(slice: Union[slice, int]) -> Sequence[int, Optional[int], Optional[int]]:
+        if not isinstance(slice, int):
+            return int(slice.start), \
+                    int(slice.stop if slice.stop is not None else slice.start + 1), \
+                    int(slice.step if slice.step is not None else 1)
+        return int(slice), None, None
+
+    def __getitem__(self, slice: Union[slice, int]) -> House:
+        start, end, step = Board.__extract_slice(slice)
+        if abs(start - end) == 1:
+            return self.board[start]
+        return [self.board[i] for i in range(start, end, step)]
 
     def __eq__(self, other: Board):
         return self.board == other.board
 
+    def __str__(self):
+        board = self.copy()
+        above_houses = self[13:25]
+        down_houses =  self[12:0:-1]
+        stream = algorithms.house_collection_to_string(above_houses) \
+                    + '\n' \
+                    + algorithms.house_collection_to_string(down_houses, reverse=True)
+        return stream
+
+    def __repr__(self):
+        return str(self)
+
     def copy(self) -> Board:
         return Board(**self.dict())
-
 
 if __name__ == '__main__':
     board = Board()
