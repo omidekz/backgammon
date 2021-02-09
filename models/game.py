@@ -8,7 +8,7 @@ except ImportError as e:
     from house import House
     from marble import Marble
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Sequence, Union, List
 
 
@@ -16,7 +16,7 @@ class Game(BaseModel):
 
     white_player:       User    = User(name='white player')
     black_player:       User    = User(name='black player')
-    board:              Board   = Board()
+    board:              Board   = Field(default_factory=Board)
     black_turn:         bool    = True
 
     def next(self, dice: Sequence[int] = (), number: int = 2) -> None:
