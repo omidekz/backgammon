@@ -102,8 +102,8 @@ class Board(BaseModel):
     def __str__(self):
         from algorithms.house import house_collection_to_string
         board = self.copy()
-        above_houses = self[13:25]
-        down_houses =  self[12:0:-1]
+        above_houses = board[13:25]
+        down_houses =  board[12:0:-1]
         stream = house_collection_to_string(above_houses) \
                     + '\n' \
                     + house_collection_to_string(down_houses, reverse=True)
