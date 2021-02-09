@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Union, Sequence, Dict, ItemsView, Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import copy
 
 try:
@@ -18,7 +18,7 @@ class Board(BaseModel):
             [House.build(house_number=i) for i in range(1, 25)]
         )
     )
-    current_turn_toss: Sequence[int] = Dice.toss()
+    current_turn_toss: Sequence[int] = Field(default_factory=Dice.toss)
 
     @property
     def toss(self):
@@ -55,7 +55,9 @@ class Board(BaseModel):
     ):
         src, dst = self.get_house(src), self.get_house(dst)
         return bool(
-            src.is_host(marble)
+            src
+            and dst
+            and src.is_host(marble)
             and src.marble_counter(marble) >= number
             and marble.has_progressive_movements(int(src), int(dst))
             and dst.can_add(marble)
@@ -90,13 +92,24 @@ class Board(BaseModel):
                     int(slice.step if slice.step is not None else 1)
         return int(slice), None, None
 
+    @staticmethod
+    def __check_slice_indexes(start: int, end: Optional[int], step: Optional[int]) -> bool:
+        has_end  = bool(end)
+        has_step = bool(step)
+        return not 1 <= start <= 24 \
+                or has_end \
+                    and not (
+                        0 if has_step and step == -1 else 1
+                    ) <= end <= (
+                        25 if has_step and step == 1 else 24
+                    )
+
     def __getitem__(self, slice: Union[slice, int]) -> House:
         if isinstance(slice, House):
             return slice
 
         start, end, step = Board.__extract_slice(slice)
-
-        if not 0 <= start <= 24 or (not end and 0 <= end <= 24):
+        if self.__check_slice_indexes(start, end, step):
             return None
         if end is None or abs(start - end) == 1:
             return self.board[start]
@@ -120,6 +133,9 @@ class Board(BaseModel):
 
     def copy(self) -> Board:
         return Board(**self.dict())
+
+    def __hash__(self):
+        return hash(tuple(self.board.values()))
 
 if __name__ == '__main__':
     board = Board()
