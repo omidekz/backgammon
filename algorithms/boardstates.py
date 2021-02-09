@@ -4,6 +4,11 @@ from models.board import Board
 from typing import Sequence, Union
 from enum import Enum
 
+class CustomSet(set):
+    def extend(self, itemslist: Sequence):
+        for item in itemslist:
+            self.add(item)
+
 
 def create_boards(board: Board, moves: int, marble: Marble) -> Sequence[Board]:
     boards = set()
@@ -20,14 +25,12 @@ def create_all_boards(
     dices: Sequence[int],
     marble: Marble
 ) -> Sequence[Board]:
-    all_boards = set()
+    all_boards = CustomSet()
     for dice in dices:
-        new_boards = set()
+        new_boards = CustomSet()
         for board in boards:
-            bs = create_boards(board, dice, marble)
-            [new_boards.add(b) for b in bs]
+            new_boards.extend(create_boards(board, dice, marble))
         next_dices = dices.copy()
         next_dices.pop(next_dices.index(dice))
-        bs = create_all_boards(new_boards, next_dices, marble)
-        [all_boards.add(b) for b in bs]
+        all_boards.extend(create_all_boards(new_boards, next_dices, marble))
     return all_boards or boards
