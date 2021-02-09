@@ -1,4 +1,5 @@
-try: 
+import algorithms
+try:
     from . import Board, Dice, User, House, Marble
 except ImportError as e:
     from user import User
@@ -39,14 +40,26 @@ class Game(BaseModel):
         return self.board.marble_houses(marble, index)
 
     def get_all_movements(self, marble: Marble, dices: Sequence[int], boards: Sequence[Board]) -> Sequence[Board]:
-        pass
+        return algorithms.create_all_boards(boards, dices, marble)
 
     def player_movements(self, player: User = None) -> Sequence[Board]:
         player = player or self.current_player()
-        marbles_index = self.marble_houses(player)
         marble = self.player_marble(player)
+        dices = self.board.current_turn_toss
         return self.get_all_movements(
             marble,
-            marbles_index,
+            dices,
             [self.board.copy()]
         )
+
+    def __str__(self):
+        return '{player1}: {marble1}\n{player2}: {marble2}\nboard:\n{board}'.format(
+            player1=self.white_player.name,
+            marble1=self.player_marble(self.white_player),
+            player2=self.black_player.name,
+            marble2=self.player_marble(self.black_player),
+            board=str(self.board)
+        )
+
+    def __repr__(self):
+        return str(self)
