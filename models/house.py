@@ -113,3 +113,6 @@ class House(BaseModel):
     
     def __repr__(self):
         return str(self)
+
+    def __hash__(self):
+        return hash(tuple(self.marbles))
