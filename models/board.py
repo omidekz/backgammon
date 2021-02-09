@@ -91,7 +91,13 @@ class Board(BaseModel):
         return int(slice), None, None
 
     def __getitem__(self, slice: Union[slice, int]) -> House:
+        if isinstance(slice, House):
+            return slice
+
         start, end, step = Board.__extract_slice(slice)
+
+        if not 0 <= start <= 24 or (not end and 0 <= end <= 24):
+            return None
         if end is None or abs(start - end) == 1:
             return self.board[start]
         return [self.board[i] for i in range(start, end, step)]
